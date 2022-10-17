@@ -1,0 +1,34 @@
+version: '3.4'
+
+services:
+  php:
+    image: php
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    environment:
+      - DATABASE_URL="postgresql://postgres:password@database:5432/postgres"
+    volumes:
+      - .:/var/www/project/
+  database:
+    image: postgres:14.4
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  apache: 
+    image: apache
+    build:
+      context: .
+      dockerfile: ./docker/apache/Dockerfile
+    volumes:
+      - ./public:/var/www/project/public
+    ports: 
+      - 80:80
+
+
+
+volumes:
+  pgdata:
